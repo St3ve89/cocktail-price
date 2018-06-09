@@ -21,12 +21,16 @@ class Cocktail extends Component {
 
   }
 
-  addCocktailToState = (something) => {
+  addCocktailToState = something => {
     console.log(`awesome ${something}`)
     this.setState({
       cocktail: [...this.state.cocktail, {name: something, id: this.state.cocktail.length +1}]
     })
     console.log(this.state.cocktail)
+  }
+
+  removeCocktailFromState = id => {
+    console.log(`cocktail with ${id} has been deleted`);
   }
 
   renderCocktail = () => {
@@ -43,16 +47,18 @@ class Cocktail extends Component {
 
   async deleteCocktail(id) {
     console.log(id);
-    await axios.delete(`${BASE_URL}coctail`, {
-      id
+    await axios.delete(`${BASE_URL}coctail/${id}`, {
+      'Content-Type' : 'application/json',
+      method: 'DELETE'
+    }).then(result => {
+      console.log(result)
     })
-
   }
   
   render(){
     return(
       <div>
-        <div>{this.renderCocktail()}</div>,
+        <div>{this.renderCocktail()}</div>
         <AddCocktail
           fbi={this.addCocktailToState} />
       </div>
