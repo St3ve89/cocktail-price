@@ -19,17 +19,26 @@ class AddCocktail extends Component {
         'Content-Type': 'application/json', 
       })
       this.props.fbi(this.input.value);
+      this.input.value = '';
+      this.input.focus();
     } catch (e) {
 
     }
   }
 
+  handleEnter = event => {
+    if(event.keyCode === 13) {
+      this.pushCocktail();
+    }
+  }
 
   render(){
     return(
       <p>
         <input 
-          ref= {e => this.input = e} />
+          ref= {e => this.input = e}
+          onKeyDown={this.handleEnter}
+          />
         <button
           onClick={this.pushCocktail}>
           Add </button>
