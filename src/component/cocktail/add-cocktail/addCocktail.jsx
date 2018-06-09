@@ -32,7 +32,7 @@ class AddCocktail extends Component {
           ref= {e => this.input = e} />
         <button
           onClick={this.pushCocktail}>
-          Button </button>
+          Add </button>
       </p>
     )
   }
