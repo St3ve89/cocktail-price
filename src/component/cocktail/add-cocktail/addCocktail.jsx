@@ -41,7 +41,7 @@ class AddCocktail extends Component {
           />
         <button
           onClick={this.pushCocktail}>
-          Add </button>
+          Add Cocktail</button>
       </p>
     )
   }

@@ -8,7 +8,8 @@ import './cocktail.css';
 class Cocktail extends Component {
 
   state = {
-    cocktail:[]
+    cocktail:[],
+    current: null
   }
 
   async getCocktail() {
@@ -22,15 +23,34 @@ class Cocktail extends Component {
   }
 
   addCocktailToState = something => {
-    console.log(`awesome ${something}`)
     this.setState({
       cocktail: [...this.state.cocktail, {name: something, id: this.state.cocktail.length +1}]
     })
-    console.log(this.state.cocktail)
   }
 
   removeCocktailFromState = id => {
-    console.log(`cocktail with ${id} has been deleted`);
+  }
+
+  setCurrentCocktail = id => {
+    this.setState({
+      current: id
+    })
+  }
+
+  handleEditCocktail = event => {
+    const { keyCode: key } = event; 
+    // if escape is pressed (27)
+    if (key === 27) {
+      this.setState({
+        current: null
+      })
+    } else if (key === 13) {
+      this.saveCocktail({
+        id: this.state.current,
+        name: event.target.value
+      })
+    }
+    // if enter is pressed (13)
   }
 
   renderCocktail = () => {
@@ -39,14 +59,27 @@ class Cocktail extends Component {
       .cocktail
       .map((cocktail, key) =>
         <p key={key} className='cocktail__item'>
-          <span>{cocktail.name}</span>
-          <span onClick={() => this.deleteCocktail(cocktail.id)}> &times; </span>
+          <span>
+            {
+              this.state.current !== cocktail.id && 
+              <span>{cocktail.name}</span>
+            }
+            {
+              this.state.current === cocktail.id &&
+              <input 
+                type="text" 
+                defaultValue={cocktail.name}
+                onKeyDown={this.handleEditCocktail}
+                autoFocus />
+            }
+          </span>
+          <button onClick={() => this.deleteCocktail(cocktail.id)}> &times; </button>
+          <button onClick={() => this.setCurrentCocktail(cocktail.id)}>Edit</button>
         </p>
       )
   }
 
   async deleteCocktail(id) {
-    console.log(`cocktail with id "${id}" has been deleted`);
     await axios.delete(`${BASE_URL}cocktail/${id}`, {
       'Content-Type' : 'application/json',
       method: 'DELETE'
@@ -55,6 +88,27 @@ class Cocktail extends Component {
       this.setState({
         cocktail: this.state.cocktail.filter(cocktail => cocktail.id !== id)
       });
+    })
+  }
+
+  async saveCocktail(cocktailObject) {
+    await axios.put(`${BASE_URL}cocktail/${cocktailObject.id}`, {
+      'Content-Type' : 'application/json',
+      ...cocktailObject,
+      method: 'PUT'
+    }).then(result => {
+      // remove the coctail from state
+      this.setState({
+        cocktail: this.state.cocktail.map(cocktail => cocktail.id !== cocktailObject.id ?
+          // if it's not the id, return the same object
+          cocktail :
+          // if it's the one to be updated return  the new object name
+          cocktailObject
+        )
+      });
+      this.setState({
+        current: null
+      })
     })
   }
   

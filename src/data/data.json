@@ -9,8 +9,14 @@
       "id": 2
     },
     {
-      "name": "asd",
-      "id": 3
+      "Content-Type": "application/json",
+      "id": 3,
+      "name": "Codetap is awesome",
+      "method": "PUT"
+    },
+    {
+      "name": "asdqwe23",
+      "id": 4
     }
   ]
 }
